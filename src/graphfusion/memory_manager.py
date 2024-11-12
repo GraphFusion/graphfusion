@@ -33,11 +33,13 @@ class MemoryManager:
         if 0 <= memory_id < len(self.memory):
             self.memory[memory_id]["data"] = new_data
     
-    def forget_old_entries(self, threshold=0.2):
-        """Removes entries with relevance below a certain threshold."""
+    def forget_old_entries(self, reference_embedding, threshold=0.8):
+        """
+        Forget entries that are below the similarity threshold with respect to the reference_embedding.
+        """
         self.memory = [
-            entry for entry in self.memory
-            if cosine_similarity(entry["embedding"].reshape(1, -1), entry["embedding"].reshape(1, -1)).item() > threshold
+            entry for entry in self.memory 
+            if self.compute_similarity(reference_embedding, entry['embedding']) >= threshold
         ]
     
     def update_on_feedback(self, feedback):
@@ -45,3 +47,9 @@ class MemoryManager:
         for entry in self.memory:
             if feedback["relevance"] < 0.5:  # Example condition based on feedback
                 entry["embedding"] *= 0.9  # Decrease relevance of similar entries
+
+    def compute_similarity(self, embedding1, embedding2):
+        """
+        Compute the cosine similarity between two embeddings.
+        """
+        return cosine_similarity(embedding1.reshape(1, -1), embedding2.reshape(1, -1)).item()
