@@ -1,2 +1,9 @@
+torch
+transformers
 networkx
 scikit-learn
+numpy
+pandas
+matplotlib
+tqdm
+pytest
