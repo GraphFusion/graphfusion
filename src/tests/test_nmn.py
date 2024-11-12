@@ -1,16 +1,18 @@
-import unittest
-from graphfusion import NeuralMemoryNetwork
+# Importing NMN and initializing with a specific model
+from graphfusion.nmn_core import NeuralMemoryNetwork
 
-class TestNMN(unittest.TestCase):
-    def setUp(self):
-        self.nmn = NeuralMemoryNetwork()
+# Initialize the NMN
+nmn = NeuralMemoryNetwork(model_name="bert-base-uncased")
 
-    def test_store_and_retrieve(self):
-        self.nmn.store_data("patient123", "has_diagnosis", "Diabetes")
-        result = self.nmn.retrieve_data("patient123", "has_diagnosis")
-        self.assertEqual(result['value'], "Diabetes")
+# Process clinical text data
+patient_data = "Patient presents with fever and cough, has a history of asthma."
+embedding = nmn.embed_text(patient_data)
 
-    def test_predict(self):
-        self.nmn.learn([[1, 2], [3, 4]], [0, 1])  # Mock training
-        prediction = self.nmn.predict([[1, 2]])
-        self.assertIn(prediction, [0, 1])
+# Compare similarity between two clinical records
+record_1 = "Patient complains of shortness of breath, fever."
+record_2 = "Patient has asthma and reported breathing difficulties."
+embedding1 = nmn.embed_text(record_1)
+embedding2 = nmn.embed_text(record_2)
+
+similarity_score = nmn.compute_similarity(embedding1, embedding2)
+print("Similarity Score:", similarity_score.item())
