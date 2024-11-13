@@ -1,109 +1,109 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../src')))
 import pytest
-import torch
-from transformers import AutoModel, AutoTokenizer
-from graphfusion.nmn_core import NeuralMemoryNetwork  # Make sure the import path is correct
+import numpy as np
+from unittest.mock import MagicMock
+from graphfusion.nmn_core import NeuralMemoryNetwork
+from graphfusion.memory_manager import MemoryManager
+from graphfusion.recommendation_engine import RecommendationEngine
+from graphfusion.knowledge_graph import KnowledgeGraph
 
 @pytest.fixture
 def setup_nmn():
-    """
-    Fixture to set up the NeuralMemoryNetwork for testing.
-    This will be run before each test that uses this fixture.
-    """
-    nmn = NeuralMemoryNetwork()  # Initialize the NeuralMemoryNetwork
-    return nmn
+    memory_manager = MemoryManager()
+    recommendation_engine = RecommendationEngine()
+    knowledge_graph = KnowledgeGraph()
 
-def test_embed_text(setup_nmn):
-    """
-    Test the embedding generation for a simple text.
-    This will check if the embedding is generated correctly and has the expected shape.
-    """
-    nmn = setup_nmn
-    text = "Hello, this is a test sentence."
-    embedding = nmn.embed_text(text)
-    
-    # Check if the output is a tensor and has the correct shape
-    assert isinstance(embedding, torch.Tensor)
-    assert embedding.shape == (1, nmn.model.config.hidden_size)
+    # Create an instance of the NeuralMemoryNetwork
+    nmn = NeuralMemoryNetwork(
+        memory_manager=memory_manager,
+        recommendation_engine=recommendation_engine,
+        knowledge_graph=knowledge_graph
+    )
 
-def test_compute_similarity(setup_nmn):
-    """
-    Test the similarity computation between two text embeddings.
-    This will ensure that the similarity calculation works as expected.
-    """
-    nmn = setup_nmn
-    text1 = "Hello, this is a test sentence."
-    text2 = "Hello, this is another test sentence."
-    
-    embedding1 = nmn.embed_text(text1)
-    embedding2 = nmn.embed_text(text2)
-    
-    similarity = nmn.compute_similarity(embedding1, embedding2)
-    
-    # Check if similarity is a tensor with shape torch.Size([1])
-    assert isinstance(similarity, torch.Tensor)
-    assert similarity.shape == torch.Size([1])  # Expect a tensor with one element
+    return nmn, memory_manager, recommendation_engine, knowledge_graph
 
-def test_analyze_input(setup_nmn):
-    """
-    Test the analysis of input text.
-    This test ensures the function returns both an embedding and the original text.
-    """
-    nmn = setup_nmn
-    text = "This is an analysis test."
+def test_generate_embedding(setup_nmn):
+    nmn, _, _, _ = setup_nmn
     
-    result = nmn.analyze_input(text)
-    
-    # Check if the result contains 'embedding' and 'text'
-    assert 'embedding' in result
-    assert 'text' in result
-    
-    # Check that the embedding is a tensor
-    assert isinstance(result['embedding'], torch.Tensor)
-    assert result['embedding'].shape == (1, nmn.model.config.hidden_size)
-    
-    # Check if the text is correct
-    assert result['text'] == text
+    # Test embedding generation from text
+    text = "This is a test."
+    embedding = nmn.generate_embedding(text)
 
-def test_embedding_consistency(setup_nmn):
-    """
-    Test that embedding for the same text is consistent.
-    This ensures that embeddings for the same text are always identical.
-    """
-    nmn = setup_nmn
-    text = "Consistency test."
-    
-    embedding1 = nmn.embed_text(text)
-    embedding2 = nmn.embed_text(text)
-    
-    # Check if embeddings for the same text are identical
-    assert torch.equal(embedding1, embedding2), "Embeddings should be identical for the same input text."
+    assert isinstance(embedding, np.ndarray), "Embedding should be a numpy array."
+    assert embedding.shape[0] > 0, "Embedding should have a non-zero length."
 
-def test_similarity_with_identical_text(setup_nmn):
-    """
-    Test that similarity between identical text is close to 1.
-    This ensures that the model considers identical texts to be highly similar.
-    """
-    nmn = setup_nmn
-    text = "Same text similarity."
+def test_store_in_memory(setup_nmn):
+    nmn, memory_manager, _, knowledge_graph = setup_nmn
     
-    embedding1 = nmn.embed_text(text)
-    embedding2 = nmn.embed_text(text)
+    # Mocking the knowledge graph to return a fake node ID
+    knowledge_graph.add_node = MagicMock(return_value="node_1")
     
-    similarity = nmn.compute_similarity(embedding1, embedding2)
-    
-    # Check if similarity is close to 1
-    assert similarity.item() > 0.9, f"Similarity is too low: {similarity.item()}"
+    # Store data in memory and update the knowledge graph
+    text = "Patient presents with a fever."
+    data = {"symptom": "fever", "severity": "high"}
+    nmn.store_in_memory(text, data, label="fever")
 
-def test_empty_input(setup_nmn):
-    """
-    Test how the model handles empty input.
-    This ensures that an empty string doesn't cause errors.
-    """
-    nmn = setup_nmn
-    text = ""
+    # Check if the memory manager received the store request
+    assert len(memory_manager.memory) == 1, "Memory should contain one item."
+    assert memory_manager.memory[0]["data"] == data, "Stored data should match the input data."
+
+    # Check if the knowledge graph was updated
+    knowledge_graph.add_node.assert_called_once_with(data, label="fever")
+    assert knowledge_graph.add_node.call_count == 1, "Knowledge graph should have one node added."
+
+def test_retrieve_similar(setup_nmn):
+    nmn, memory_manager, _, _ = setup_nmn
     
-    result = nmn.analyze_input(text)
+    # Store some example data in memory
+    text1 = "Patient has a fever."
+    data1 = {"symptom": "fever", "severity": "moderate"}
+    nmn.store_in_memory(text1, data1)
+
+    text2 = "Patient experiences chills."
+    data2 = {"symptom": "chills", "severity": "moderate"}
+    nmn.store_in_memory(text2, data2)
+
+    # Retrieve similar cases
+    query_text = "Patient reports a fever."
+    similar_cases = nmn.retrieve_similar(query_text, top_k=2)
+
+    assert len(similar_cases) > 0, "There should be at least one similar case retrieved."
+    assert similar_cases[0]["data"] == data1, "The most similar case should match the stored data."
+
+def test_generate_recommendations(setup_nmn):
+    nmn, _, recommendation_engine, _ = setup_nmn
     
-    # Check that the embedding shape is as expected even for empty text
-    assert result["embedding"].shape == (1, nmn.model.config.hidden_size)
-    assert result["text"] == text
+    # Mock the recommendation engine
+    recommendation_engine.generate_recommendations = MagicMock(return_value=["Recommendation 1", "Recommendation 2"])
+
+    # Generate recommendations based on text
+    text = "Patient has a headache and fever."
+    recommendations = nmn.generate_recommendations(text, top_k=2)
+
+    # Ensure the recommendations are generated correctly
+    assert len(recommendations) == 2, "There should be two recommendations."
+    assert recommendations == ["Recommendation 1", "Recommendation 2"], "Recommendations should match the mocked return values."
+
+def test_update_on_feedback(setup_nmn):
+    nmn, memory_manager, _, knowledge_graph = setup_nmn
+    
+    # Mock the methods for memory and knowledge graph updates
+    memory_manager.update_on_feedback = MagicMock()
+    knowledge_graph.reduce_edge_weight = MagicMock()
+
+    feedback = [
+        {"node_id": "node_1", "relevance": 0.4},
+        {"node_id": "node_2", "relevance": 0.8}
+    ]
+    
+    # Update the network based on feedback
+    nmn.update_on_feedback(feedback)
+    
+    # Ensure the memory update method was called
+    memory_manager.update_on_feedback.assert_called_once_with(feedback)
+
+    # Ensure the knowledge graph adjustment was made
+    knowledge_graph.reduce_edge_weight.assert_called_once_with("node_1")
+
