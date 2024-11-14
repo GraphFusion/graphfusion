@@ -93,7 +93,7 @@ Link similar cases with directed edges in the knowledge graph, building a relati
 ```python
 knowledge_graph.add_node("case_123")
 knowledge_graph.add_node("case_124")
-knowledge_graph.add_edge("case_123", "case_124", confidence=0.9, link_type="related")
+knowledge_graph.add_edge("case_123", "case_124", confidence=0.9, relationship_type="related")
 ```
 
 ### Generating Recommendations
