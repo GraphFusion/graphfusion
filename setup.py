@@ -9,11 +9,11 @@ setup(
     name="graphfusion",
     version="0.1.1",
     description="GraphFusion Neural Memory Network SDK for adaptive knowledge management.",
-    long_description=long_description,  # Using README.md content as long description
-    long_description_content_type="text/markdown",  # Indicate markdown content
+    long_description=long_description,  
+    long_description_content_type="text/markdown",  
     author="Kiplangat Korir",
     author_email="Korir@GraphFusion.onmicrosoft.com",
-    url="https://github.com/yourusername/graphfusion",  # Replace with the actual URL
+    url="https://github.com/yourusername/graphfusion",  
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     install_requires=[
