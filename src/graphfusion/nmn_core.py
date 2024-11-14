@@ -8,11 +8,11 @@ import torch
 
 class NeuralMemoryNetwork:
     def __init__(self, memory_manager=None, recommendation_engine=None, knowledge_graph=None):
-        # Initialize internal components
-        self.memory_manager = self._init_memory_manager()
-        self.recommendation_engine = self._init_recommendation_engine()
-        self.knowledge_graph = self._init_knowledge_graph()
-        
+        # Initialize components if they are not passed
+        self.memory_manager = memory_manager or MemoryManager()
+        self.recommendation_engine = recommendation_engine or RecommendationEngine(self.memory_manager)  # Ensure MemoryManager is passed here
+        self.knowledge_graph = knowledge_graph or KnowledgeGraph()
+
         # Initialize embedding model
         self.model_name = "distilbert-base-uncased"
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
@@ -60,3 +60,4 @@ class NeuralMemoryNetwork:
         for entry in feedback:
             if entry["relevance"] < 0.5:
                 self.knowledge_graph.reduce_edge_weight(entry["node_id"])
+
