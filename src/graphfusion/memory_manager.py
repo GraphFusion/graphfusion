@@ -13,6 +13,11 @@ class MemoryManager:
             "data": data,
             "label": label
         })
+
+    def get_related_nodes(self, query_embedding, top_k=5):
+        """Retrieve top_k similar nodes based on the query embedding."""
+        similar_entries = self.retrieve_similar(query_embedding, top_k=top_k)
+        return [{"data": entry["data"], "similarity": entry["similarity"]} for entry in similar_entries]
         
     def retrieve_similar(self, query_embedding, top_k=5):
         """Retrieves top_k most similar entries based on cosine similarity."""
