@@ -8,9 +8,10 @@ import torch
 
 class NeuralMemoryNetwork:
     def __init__(self, memory_manager=None, recommendation_engine=None, knowledge_graph=None):
-        self.memory_manager = memory_manager or MemoryManager()
-        self.recommendation_engine = recommendation_engine or RecommendationEngine()
-        self.knowledge_graph = knowledge_graph or KnowledgeGraph()
+        # Initialize internal components
+        self.memory_manager = self._init_memory_manager()
+        self.recommendation_engine = self._init_recommendation_engine()
+        self.knowledge_graph = self._init_knowledge_graph()
         
         # Initialize embedding model
         self.model_name = "distilbert-base-uncased"
