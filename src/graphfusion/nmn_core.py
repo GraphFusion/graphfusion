@@ -8,11 +8,14 @@ import torch
 
 class NeuralMemoryNetwork:
     def __init__(self, memory_manager=None, recommendation_engine=None, knowledge_graph=None):
-        # Initialize components if they are not passed
         self.memory_manager = memory_manager or MemoryManager()
-        self.recommendation_engine = recommendation_engine or RecommendationEngine(self.memory_manager)  # Ensure MemoryManager is passed here
+        
+        # Ensure RecommendationEngine receives memory_manager
+        self.recommendation_engine = recommendation_engine or RecommendationEngine(self.memory_manager)
+        
+        # Initialize KnowledgeGraph
         self.knowledge_graph = knowledge_graph or KnowledgeGraph()
-
+        
         # Initialize embedding model
         self.model_name = "distilbert-base-uncased"
         self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
@@ -28,7 +31,12 @@ class NeuralMemoryNetwork:
     def store_in_memory(self, text, data, label=None):
         """Store data in memory and update knowledge graph."""
         embedding = self.generate_embedding(text)
-        node_id = self.knowledge_graph.add_node(data, label=label)
+        
+        # Use a unique identifier for the node, e.g., "node_<some_unique_id>"
+        node_id = f"node_{data['case_id']}"  # Example: using case_id as part of the node_id
+        
+        # Add node to the knowledge graph with the data as attributes
+        self.knowledge_graph.add_node(node_id, **data)  # Here 'data' will be attributes
         
         # Store embedding with the node reference in memory
         self.memory_manager.store_in_memory(embedding, data, label)
@@ -37,7 +45,7 @@ class NeuralMemoryNetwork:
         similar_nodes = self.knowledge_graph.find_similar_nodes(embedding, threshold=0.8)
         for similar_node in similar_nodes:
             self.knowledge_graph.add_edge(node_id, similar_node["node_id"], relation="similar_to")
-    
+
     def retrieve_similar(self, text, top_k=5):
         """Retrieve similar cases using both memory and knowledge graph."""
         query_embedding = self.generate_embedding(text)
@@ -60,4 +68,3 @@ class NeuralMemoryNetwork:
         for entry in feedback:
             if entry["relevance"] < 0.5:
                 self.knowledge_graph.reduce_edge_weight(entry["node_id"])
-
