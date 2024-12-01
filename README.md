@@ -1,151 +1,172 @@
-# GraphFusion
+# GraphFusionAI: Unified Neural Memory and Knowledge Graph Framework
 
-GraphFusion is a Neural Memory Network (NMN) SDK designed for efficient knowledge management, adaptive memory retrieval, and recommendation systems. It enables businesses and researchers to develop intelligent, context-aware applications, especially in domains like healthcare, finance, and education, where knowledge is complex and needs to be constantly updated. With GraphFusion, users can store, retrieve, and update data with confidence, leveraging NMN’s memory-driven approach for enhanced decision support and recommendations.
+## Overview
 
-## Features
-
-- **Flexible Memory Storage**: Use embedding-based memory storage to capture and retrieve knowledge.
-- **Context-Aware Recommendations**: Generate recommendations based on semantic similarity and relevance feedback.
-- **Graph-Structured Knowledge Representation**: Organize knowledge with directed links and confidence scores for efficient data navigation.
-- **Adaptive Learning**: Self-healing and feedback-aware updates enable the model to learn from new data and improve over time.
-
----
+GraphFusionAI is an advanced machine learning library that integrates neural memory networks with knowledge graph representations, enabling adaptive and interpretable memory systems for AI applications.
 
 ## Installation
 
-To install GraphFusion, you can use pip:
-
 ```bash
-pip install graphfusion
+pip install graphfusion-ai
 ```
 
-### Requirements
+## Core Concepts
 
-GraphFusion requires Python 3.7 or later. It depends on several libraries, which will be installed automatically with pip, including:
+### 1. Neural Memory Networks
 
-- `numpy`
-- `scikit-learn`
-- `torch`
-- `transformers`
-- `pandas`
-- `networkx`
+Neural memory networks provide dynamic, context-aware memory capabilities:
+- Adaptive memory updates
+- Contextual embedding
+- Semantic information retention
 
-## Usage
+### 2. Knowledge Graph Integration
 
-Below is a quick start guide on how to use GraphFusion for a clinical recommendation system. We’ll demonstrate initialization, memory storage, and retrieving recommendations based on user queries.
+Knowledge graphs offer:
+- Structured relationship representation
+- Semantic reasoning
+- Interpretable knowledge storage
 
-### Initializing GraphFusion
+### 3. Fusion Mechanism
 
-Import and initialize the core components:
+The fusion layer combines neural memory and knowledge graph representations through:
+- Adaptive weighting
+- Multi-modal information integration
+- Contextual reasoning
 
-```python
-from graphfusion.nmn_core import NeuralMemoryNetwork
-from graphfusion.memory_manager import MemoryManager
-from graphfusion.knowledge_graph import KnowledgeGraph
-from graphfusion.recommendation_engine import RecommendationEngine
+## Quick Start Guide
 
-# Initialize components
-nmn = NeuralMemoryNetwork()
-memory_manager = MemoryManager()
-knowledge_graph = KnowledgeGraph()
-recommendation_engine = RecommendationEngine(memory_manager, knowledge_graph)
-```
-
-### Storing Information in Memory
-
-You can store embeddings and associated clinical data within the memory for future retrieval:
+### Basic Usage
 
 ```python
-import numpy as np
+import torch
+from graphfusion import GraphFusionAI
 
-# Example embedding and data
-embedding = np.random.rand(128)  # Replace with actual embedding from model
-data = {
-    "patient_id": "12345",
-    "symptoms": ["fever", "cough"],
-    "diagnosis": "flu",
-    "treatment": "rest and hydration"
+# Configuration
+config = {
+    'input_dim': 256,
+    'memory_dim': 512,
+    'entity_count': 10000,
+    'relation_count': 100,
+    'embedding_dim': 64
 }
 
-# Store data with embedding in memory
-memory_manager.store_in_memory(embedding, data, label="clinical_case")
+# Initialize the model
+model = GraphFusionAI(config)
+
+# Prepare input data
+input_context = torch.randn(32, 256)
+previous_memory = torch.randn(32, 512)
+
+# Generate fused representation
+fused_representation = model(input_context, previous_memory)
 ```
 
-### Retrieving Similar Cases
+## Advanced Usage
 
-Given a new query, retrieve the top-k most similar cases to support decision-making:
+### Custom Knowledge Graph Creation
 
 ```python
-# Example query embedding
-query_embedding = np.random.rand(128)  # Replace with actual query embedding
+import networkx as nx
+import torch
 
-# Retrieve top-3 similar entries
-similar_cases = memory_manager.retrieve_similar(query_embedding, top_k=3)
+# Create a knowledge graph
+G = nx.Graph()
+G.add_edges_from([
+    ('Alice', 'Project1', {'relation': 'works_on'}),
+    ('Bob', 'Project1', {'relation': 'manages'})
+])
 
-for case in similar_cases:
-    print("Similar Case:", case["data"])
+# Convert graph to tensor representation
+def graph_to_tensor(G):
+    entities = list(G.nodes())
+    relations = list(nx.get_edge_attributes(G, 'relation').values())
+    
+    # Create entity and relation mappings
+    entity_map = {entity: idx for idx, entity in enumerate(entities)}
+    relation_map = {rel: idx for idx, rel in enumerate(set(relations))}
+    
+    # Convert to tensors
+    head_indices = torch.tensor([entity_map[e1] for (e1, e2, _) in G.edges(data=True)])
+    tail_indices = torch.tensor([entity_map[e2] for (e1, e2, _) in G.edges(data=True)])
+    relation_indices = torch.tensor([relation_map[data['relation']] for (_, _, data) in G.edges(data=True)])
+    
+    return head_indices, relation_indices, tail_indices
+
+# Use in GraphFusionAI
+head_idx, rel_idx, tail_idx = graph_to_tensor(G)
 ```
 
-### Knowledge Graph Linking
+## API Reference
 
-Link similar cases with directed edges in the knowledge graph, building a relationship network that aids in further recommendations.
+### GraphFusionAI Class
 
-```python
-knowledge_graph.add_node("case_123")
-knowledge_graph.add_node("case_124")
-knowledge_graph.add_edge("case_123", "case_124", confidence=0.9, relationship_type="related")
-```
+#### Constructor Parameters
+- `input_dim` (int): Dimension of input features
+- `memory_dim` (int): Dimension of memory representation
+- `entity_count` (int): Total number of entities in knowledge graph
+- `relation_count` (int): Total number of relation types
+- `embedding_dim` (int, optional): Embedding dimension for entities and relations
 
-### Generating Recommendations
+#### Methods
+- `forward(input_context, previous_memory)`: Generate fused representation
+- `train_step(batch)`: Perform a single training iteration
 
-Use the `RecommendationEngine` to produce recommendations from the knowledge graph based on recent similar cases:
+### DynamicMemoryCell
 
-```python
-recommendations = recommendation_engine.generate_recommendations(query_embedding)
-for rec in recommendations:
-    print("Recommendation:", rec)
-```
+#### Key Features
+- Context-aware memory updates
+- Multi-head attention mechanism
+- Adaptive input processing
 
-## Project Structure
+### KnowledgeGraphEmbedder
 
-Here’s an overview of the project files and directories:
+#### Embedding Techniques
+- ComplEx embedding approach
+- Complex vector space reasoning
+- Tensor factorization for relationship scoring
 
-```plaintext
-graphfusion/
-├── src/
-│   ├── graphfusion/
-│   │   ├── __init__.py
-│   │   ├── nmn_core.py            # Core Neural Memory Network logic
-│   │   ├── memory_manager.py      # Embedding-based memory management
-│   │   ├── knowledge_graph.py     # Knowledge graph for data relationships
-│   │   └── recommendation_engine.py # Recommendation engine for similar cases
-│   ├── tests/
-│   │   ├── test_nmn_core.py
-│   │   ├── test_memory_manager.py
-│   │   └── test_knowledge_graph.py
-├── setup.py
-├── README.md
-└── requirements.txt
-```
+## Use Cases
+
+1. **Healthcare**: 
+   - Patient history tracking
+   - Adaptive diagnostic support
+
+2. **Education**: 
+   - Personalized learning paths
+   - Knowledge retention modeling
+
+3. **Finance**: 
+   - Fraud detection
+   - Investment pattern recognition
+
+## Performance Considerations
+
+- Time Complexity: O(n log n)
+- Space Complexity: O(n²)
+
+## Scalability Strategies
+- Sparse tensor representations
+- Distributed computing support
+- Incremental graph updates
 
 ## Contributing
 
-Contributions to GraphFusion are welcome! To contribute, please follow these steps:
-
-1. Fork the repository.
-2. Create a new feature branch.
-3. Commit your changes.
-4. Submit a pull request.
-
-Please ensure your code adheres to the existing style and passes all tests.
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 
-This is an internal project, hence it should be developed according to our internal guidelines and policies.
+MIT License
 
----
+## Citation
 
-## Support
-
-For any issues or support requests, please contact us at `support@graphfusion.onmicrosoft.com`.
-
+```bibtex
+@software{graphfusionai2024,
+  title={GraphFusionAI: Unified Neural Memory and Knowledge Graph Framework},
+  author={GraphFusionAI Developers},
+  year={2024},
+  url={https://github.com/graphfusionai/graphfusion}
+}
