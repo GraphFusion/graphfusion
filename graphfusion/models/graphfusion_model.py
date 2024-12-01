@@ -6,7 +6,7 @@ import torch.nn as nn
 import networkx as nx
 from core.memory_network import DynamicMemoryCell
 from core.knowledge_graph import KnowledgeGraphEmbedder
-from core.fusion_layer import FusionLayer
+from core.fusion_layer import GraphFusionLayer
 
 class GraphFusionAI(nn.Module):
     def __init__(self, config, knowledge_graph=None):
