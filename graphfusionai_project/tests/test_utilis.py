@@ -1,9 +1,9 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'graphfusionai')))
 import pytest
 import networkx as nx
-from graphfusionai_project.utils import Utils
+from graphfusionai.utils import Utils
 
 def test_validate_graph():
     g = nx.DiGraph()
