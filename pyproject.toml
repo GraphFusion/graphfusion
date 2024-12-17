@@ -29,4 +29,5 @@ Repository = "https://github.com/graphfusionai/graphfusion"
 
 # Add this part if you're using the src layout
 [tool.setuptools]
-package_dir = {"" = "graphfusionai"}  # Points setuptools to the correct source code directory
+package_dir = {"graphfusionai_project" = "graphfusionai_project/graphfusionai"} 
+
