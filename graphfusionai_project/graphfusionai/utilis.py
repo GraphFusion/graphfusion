@@ -1,18 +1,23 @@
+# graphfusionai/utils.py
 import networkx as nx
 import json
 
 class Utils:
     @staticmethod
     def validate_graph(graph):
-        if not isinstance(graph, nx.Graph):
-            raise ValueError("Input must be a NetworkX graph.")
+        if not isinstance(graph, nx.DiGraph):
+            raise ValueError("Input must be a networkx DiGraph")
+        return True
 
     @staticmethod
-    def export_graph(graph, filename, format="json"):
-        if format == "json":
-            with open(filename, 'w') as f:
-                json.dump(nx.node_link_data(graph), f)
-        elif format == "graphml":
-            nx.write_graphml(graph, filename)
+    def export_graph(graph, file_path, format="json"):
+        if format.lower() == "json":
+            graph_data = {
+                "nodes": list(graph.nodes(data=True)),
+                "edges": list(graph.edges(data=True))
+            }
+            
+            with open(file_path, 'w') as f:
+                json.dump(graph_data, f, indent=2)
         else:
-            raise ValueError("Unsupported format. Use 'json' or 'graphml'.")
+            raise ValueError(f"Unsupported format: {format}")
