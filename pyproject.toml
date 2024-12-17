@@ -12,6 +12,7 @@ dependencies = [
     "torch",
     "numpy",
     "networkx",
+    "pytest",
     "pandas"
 ]
 
