@@ -14,8 +14,8 @@ setup(
     author="Kiplangat Korir",
     author_email="Korir@GraphFusion.onmicrosoft.com",
     url="https://github.com/GraphFusion/graphfusion",  
-    packages=find_packages(where="src"),
-    package_dir={"": "src"},
+    packages=find_packages(where="graphfusionai"),
+    package_dir={"": "graphfusionai"},
     install_requires=[
         "torch",
         "transformers",
