@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import pytest
 import networkx as nx
-from graphfusionai.utils import Utils
+from graphfusionai_project.utils import Utils
 
 def test_validate_graph():
     g = nx.DiGraph()
