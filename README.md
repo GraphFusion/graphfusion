@@ -1,172 +1,218 @@
-# GraphFusionAI: Unified Neural Memory and Knowledge Graph Framework
+# **GraphFusionAI**
 
-## Overview
+**GraphFusionAI** is a powerful library for integrating **dynamic neural memory** with **knowledge graphs**, enabling intelligent graph-based reasoning, contextual updates, and advanced querying for AI applications. The library is designed for flexibility, scalability, and ease of use across domains like conversational AI, healthcare, recommendation systems, and more.
 
-GraphFusionAI is an advanced machine learning library that integrates neural memory networks with knowledge graph representations, enabling adaptive and interpretable memory systems for AI applications.
+## **Table of Contents**
+- [Introduction](#introduction)  
+- [Key Features](#key-features)  
+- [Installation](#installation)  
+- [Quick Start](#quick-start)  
+- [Core Components](#core-components)  
+  - [Graph](#graph)  
+  - [Dynamic Memory Cell](#dynamic-memory-cell)  
+  - [Knowledge Graph Embedding](#knowledge-graph-embedding)  
+- [Example Use Cases](#example-use-cases)  
+- [Documentation](#documentation)  
+- [Contributing](#contributing)  
+- [License](#license)  
 
-## Installation
+
+## **Introduction**
+
+GraphFusionAI combines two critical components of modern AI:  
+1. **Knowledge Graphs** for structured representation of relationships between entities.  
+2. **Dynamic Neural Memory** to enable context-aware and real-time updates using neural networks.
+
+By fusing these components, the library allows for:  
+- **Querying and reasoning** over complex knowledge graphs.  
+- **Dynamic updates** with contextual embeddings.  
+- **Seamless integration** with deep learning workflows.
+
+This makes GraphFusionAI a robust tool for applications like conversational agents, knowledge-based systems, and more.
+
+## **Key Features**
+
+- **Graph Management**: Add, query, and manipulate nodes and edges with ease.
+- **Dynamic Neural Memory**: Context-aware updates using GRU-based memory cells.
+- **Graph Embeddings**: Compute embeddings for nodes, edges, and graphs.
+- **Similarity Computation**: Measure semantic similarity between entities in a knowledge graph.
+- **Visualization**: Easily visualize the structure of knowledge graphs.
+- **Integration**: Compatible with tools like PyTorch and NetworkX for seamless workflows.
+- **Scalable and Modular**: Designed for extensibility and scalability for larger graphs and real-world applications.
+
+## **Installation**
+
+To install the library, run the following command:
 
 ```bash
-pip install graphfusion-ai
+pip install graphfusionai
 ```
 
-## Core Concepts
+Ensure the following dependencies are installed in your environment:
+- `torch`
+- `networkx`
+- `numpy`
+- `matplotlib`
+- `scikit-learn`
 
-### 1. Neural Memory Networks
+You can also install directly from the source code:
 
-Neural memory networks provide dynamic, context-aware memory capabilities:
-- Adaptive memory updates
-- Contextual embedding
-- Semantic information retention
-
-### 2. Knowledge Graph Integration
-
-Knowledge graphs offer:
-- Structured relationship representation
-- Semantic reasoning
-- Interpretable knowledge storage
-
-### 3. Fusion Mechanism
-
-The fusion layer combines neural memory and knowledge graph representations through:
-- Adaptive weighting
-- Multi-modal information integration
-- Contextual reasoning
-
-## Quick Start Guide
-
-### Basic Usage
-
-```python
-import torch
-from graphfusion import GraphFusionAI
-
-# Configuration
-config = {
-    'input_dim': 256,
-    'memory_dim': 512,
-    'entity_count': 10000,
-    'relation_count': 100,
-    'embedding_dim': 64
-}
-
-# Initialize the model
-model = GraphFusionAI(config)
-
-# Prepare input data
-input_context = torch.randn(32, 256)
-previous_memory = torch.randn(32, 512)
-
-# Generate fused representation
-fused_representation = model(input_context, previous_memory)
+```bash
+git clone https://github.com/yourusername/graphfusionai.git
+cd graphfusionai
+pip install .
 ```
 
-## Advanced Usage
+## **Quick Start**
 
-### Custom Knowledge Graph Creation
+Here is a simple example to get started with GraphFusionAI:
 
+### **Graph Operations**
 ```python
-import networkx as nx
+from graphfusionai.graph import Graph
+
+# Initialize the graph
+graph = Graph()
+
+# Add knowledge
+graph.add_knowledge('Apple', 'is_fruit', 'Fruit')
+graph.add_knowledge('Fruit', 'is_category', 'Food')
+
+# Query the graph
+results = graph.query_graph(source='Apple')
+print(f"Query Results: {results}")
+
+# Visualize the graph
+graph.visualize()
+```
+
+**Output**:
+```
+Query Results: [('Apple', 'is_fruit', 'Fruit')]
+```
+
+### **Dynamic Memory Cell**
+```python
+from graphfusionai.memory import DynamicMemoryCell
 import torch
 
-# Create a knowledge graph
-G = nx.Graph()
-G.add_edges_from([
-    ('Alice', 'Project1', {'relation': 'works_on'}),
-    ('Bob', 'Project1', {'relation': 'manages'})
-])
+# Initialize the memory cell
+memory_cell = DynamicMemoryCell(input_dim=256, memory_dim=512, context_dim=128)
 
-# Convert graph to tensor representation
-def graph_to_tensor(G):
-    entities = list(G.nodes())
-    relations = list(nx.get_edge_attributes(G, 'relation').values())
-    
-    # Create entity and relation mappings
-    entity_map = {entity: idx for idx, entity in enumerate(entities)}
-    relation_map = {rel: idx for idx, rel in enumerate(set(relations))}
-    
-    # Convert to tensors
-    head_indices = torch.tensor([entity_map[e1] for (e1, e2, _) in G.edges(data=True)])
-    tail_indices = torch.tensor([entity_map[e2] for (e1, e2, _) in G.edges(data=True)])
-    relation_indices = torch.tensor([relation_map[data['relation']] for (_, _, data) in G.edges(data=True)])
-    
-    return head_indices, relation_indices, tail_indices
+# Define input and memory tensors
+input_tensor = torch.randn(256)
+previous_memory = torch.randn(512)
 
-# Use in GraphFusionAI
-head_idx, rel_idx, tail_idx = graph_to_tensor(G)
+# Update memory
+updated_memory, attention_weights = memory_cell(input_tensor, previous_memory)
+print("Updated Memory:", updated_memory)
+print("Attention Weights:", attention_weights)
 ```
 
-## API Reference
+## **Core Components**
 
-### GraphFusionAI Class
+### **1. Graph**
 
-#### Constructor Parameters
-- `input_dim` (int): Dimension of input features
-- `memory_dim` (int): Dimension of memory representation
-- `entity_count` (int): Total number of entities in knowledge graph
-- `relation_count` (int): Total number of relation types
-- `embedding_dim` (int, optional): Embedding dimension for entities and relations
+The `Graph` class enables users to create and manipulate knowledge graphs:
 
-#### Methods
-- `forward(input_context, previous_memory)`: Generate fused representation
-- `train_step(batch)`: Perform a single training iteration
+- **Add knowledge**:
+  ```python
+  graph.add_knowledge('Entity1', 'relation', 'Entity2')
+  ```
 
-### DynamicMemoryCell
+- **Query knowledge**:
+  ```python
+  graph.query_graph(source='Entity1', relation='relation')
+  ```
 
-#### Key Features
-- Context-aware memory updates
-- Multi-head attention mechanism
-- Adaptive input processing
+- **Visualize**:
+  ```python
+  graph.visualize()
+  ```
 
-### KnowledgeGraphEmbedder
+### **2. Dynamic Memory Cell**
 
-#### Embedding Techniques
-- ComplEx embedding approach
-- Complex vector space reasoning
-- Tensor factorization for relationship scoring
+The `DynamicMemoryCell` class models dynamic neural memory using GRU-based updates:
 
-## Use Cases
+- **Initialize**:
+  ```python
+  memory_cell = DynamicMemoryCell(input_dim=256, memory_dim=512, context_dim=128)
+  ```
 
-1. **Healthcare**: 
-   - Patient history tracking
-   - Adaptive diagnostic support
+- **Update memory**:
+  ```python
+  updated_memory, attention_weights = memory_cell(input_tensor, previous_memory)
+  ```
 
-2. **Education**: 
-   - Personalized learning paths
-   - Knowledge retention modeling
+### **3. Knowledge Graph Embedding**
 
-3. **Finance**: 
-   - Fraud detection
-   - Investment pattern recognition
+The `KnowledgeGraphEmbedder` computes embeddings for nodes, relations, and graphs.
 
-## Performance Considerations
+- **Compute Similarity**:
+  ```python
+  from graphfusionai.embedder import KnowledgeGraphEmbedder
 
-- Time Complexity: O(n log n)
-- Space Complexity: O(n²)
+  embedder = KnowledgeGraphEmbedder(graph)
+  similarity = embedder.compute_graph_similarity('Entity1', 'Entity2')
+  print(f"Similarity: {similarity}")
+  ```
 
-## Scalability Strategies
-- Sparse tensor representations
-- Distributed computing support
-- Incremental graph updates
+## **Example Use Cases**
 
-## Contributing
+### **1. Conversational AI**
+Build conversational agents that can store and retrieve contextual knowledge dynamically.
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+```python
+from graphfusionai.graph import Graph
 
-## License
+graph = Graph()
+graph.add_knowledge('User123', 'asked_about', 'Weather')
+response = graph.query_graph(source='User123')
+print(f"Response: {response}")
+```
 
-MIT License
+### **2. Healthcare**
+Model and query patient medical histories with contextual updates.
 
-## Citation
+```python
+graph.add_knowledge('Patient123', 'diagnosed_with', 'Diabetes')
+graph.add_knowledge('Patient123', 'prescribed', 'Metformin')
+history = graph.query_graph(source='Patient123')
+print(f"Patient History: {history}")
+```
 
-```bibtex
-@software{graphfusionai2024,
-  title={GraphFusionAI: Unified Neural Memory and Knowledge Graph Framework},
-  author={GraphFusionAI Developers},
-  year={2024},
-  url={https://github.com/graphfusionai/graphfusion}
-}
+### **3. Recommendation Systems**
+Leverage graph embeddings to compute similarities and recommend items.
+
+```python
+similarity = embedder.compute_graph_similarity('Product1', 'Product2')
+print(f"Product Similarity: {similarity}")
+```
+
+## **Documentation**
+
+For a detailed explanation of all methods, classes, and configurations, please refer to the [official documentation](https://github.com/yourusername/graphfusionai).
+
+## **Contributing**
+
+We welcome contributions! To contribute:
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Submit a pull request with a detailed explanation.
+
+To run tests:
+```bash
+pytest tests/
+```
+
+## **License**
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## **Contact**
+
+For support or collaboration, feel free to reach out:  
+**Email**: [hello@GraphFusion.onmicrosoft.com](mailto:hello@GraphFusion.onmicrosoft.com)  
+**GitHub**: [https://github.com/GraphFusion/graphfusion](https://github.com/GraphFusion/graphfusion)  
+
+Join our community on Discord: [GraphFusionAI Community](https://discord.gg/f9HtUN2x)
