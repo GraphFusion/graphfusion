@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "graphfusionai"
+version = "0.1.1"
+description = "A unified framework for Neural Memory Networks and Knowledge Graphs"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "torch",
+    "numpy",
+    "networkx",
+    "pandas"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "mypy"
+]
+
+[project.urls]
+Homepage = "https://github.com/graphfusionai/graphfusion"
+Repository = "https://github.com/graphfusionai/graphfusion"
