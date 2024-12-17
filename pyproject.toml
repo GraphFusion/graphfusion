@@ -27,7 +27,3 @@ dev = [
 Homepage = "https://github.com/graphfusionai/graphfusion"
 Repository = "https://github.com/graphfusionai/graphfusion"
 
-# Add this part if you're using the src layout
-[tool.setuptools]
-package_dir = {"graphfusionai_project" = "graphfusionai_project/graphfusionai"} 
-
