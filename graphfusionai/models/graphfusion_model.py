@@ -4,9 +4,9 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 import torch
 import torch.nn as nn
 import networkx as nx
-from core.memory_network import DynamicMemoryCell
-from core.knowledge_graph import KnowledgeGraphEmbedder
-from core.fusion_layer import GraphFusionLayer
+from graphfusionai.memory_network import DynamicMemoryCell
+from graphfusionai.graphfusionai.embedder import KnowledgeGraphEmbedder
+from graphfusionai.graphfusionai.graph import GraphFusionLayer
 
 class GraphFusionAI(nn.Module):
     def __init__(self, config, knowledge_graph=None):
