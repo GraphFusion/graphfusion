@@ -1,3 +1,25 @@
+
+
+</p>
+<h1 align="center" weight='300'>GraphFusionAI: The Unified Opensource Framework for KnowledgeGraphs and Neural Memory Networks</h1>
+<h3 align="center" weight='300'>Empowering AI with Persistent, Reliable, and Queryable Memory</h3>
+<div align="center">
+
+  [![GitHub release](https://img.shields.io/badge/Github-Release-blue)](https://github.com/GraphFusion/GraphFusion-NMN/releases)
+  [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/GraphFusion/GraphFusion/blob/main/LICENSE)
+  [![Join us on Teams](https://img.shields.io/badge/Join-Teams-blue)](https://teams.microsoft.com/)
+  [![Discord Server](https://img.shields.io/badge/Discord-Server-blue)](https://discord.gg/zK94WvRjZT)
+
+</div>
+<h3 align="center">
+   <a href="https://github.com/GraphFusion/GraphFusion-NMN/blob/main/documentation.md"><b>Docs</b></a> &bull;
+   <a href="https://graphfusion.github.io/graphfusion.io/"><b>Website</b></a>
+</h3>
+<br />
+
+---
+
+
 # **GraphFusionAI**
 
 **GraphFusionAI** is a powerful library for integrating **dynamic neural memory** with **knowledge graphs**, enabling intelligent graph-based reasoning, contextual updates, and advanced querying for AI applications. The library is designed for flexibility, scalability, and ease of use across domains like conversational AI, healthcare, recommendation systems, and more.
