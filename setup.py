@@ -6,9 +6,9 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="graphfusion",
+    name="graphfusionai",
     version="0.1.4",
-    description="GraphFusion Neural Memory Network SDK for adaptive knowledge management.",
+    description="A library for integrating dynamic neural memory with knowledge graphs",
     long_description=long_description,  
     long_description_content_type="text/markdown",  
     author="Kiplangat Korir",

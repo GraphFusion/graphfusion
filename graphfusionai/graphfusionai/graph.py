@@ -24,3 +24,9 @@ class Graph:
         edge_labels = nx.get_edge_attributes(self.graph, 'relation')
         nx.draw_networkx_edge_labels(self.graph, pos, edge_labels=edge_labels)
         plt.show()
+
+    def save_graph(self, path):
+        nx.write_gpickle(self.graph, path)
+        def load_graph(self, path):
+            self.graph = nx.read_gpickle(path)
+            
