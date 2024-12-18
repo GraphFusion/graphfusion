@@ -80,8 +80,8 @@ Ensure the following dependencies are installed in your environment:
 You can also install directly from the source code:
 
 ```bash
-git clone https://github.com/yourusername/graphfusionai.git
-cd graphfusionai
+git clone https://github.com/yourusername/graphfusion.git
+cd graphfusion
 pip install .
 ```
 
