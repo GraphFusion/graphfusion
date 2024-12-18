@@ -12,7 +12,7 @@
 
 </div>
 <h3 align="center">
-   <a href="https://github.com/GraphFusion/GraphFusion-NMN/blob/main/documentation.md"><b>Docs</b></a> &bull;
+   <a href="https://github.com/GraphFusion/graphfusion/blob/main/documentation.md"><b>Docs</b></a> &bull;
    <a href="https://graphfusion.github.io/graphfusion.io/"><b>Website</b></a>
 </h3>
 <br />
@@ -179,9 +179,9 @@ The `KnowledgeGraphEmbedder` computes embeddings for nodes, relations, and graph
   print(f"Similarity: {similarity}")
   ```
 
-## **Example Use Cases**
+## Example Use Cases
 
-### **1. Conversational AI**
+### 1. Conversational AI
 Build conversational agents that can store and retrieve contextual knowledge dynamically.
 
 ```python
@@ -193,7 +193,7 @@ response = graph.query_graph(source='User123')
 print(f"Response: {response}")
 ```
 
-### **2. Healthcare**
+### 2. Healthcare
 Model and query patient medical histories with contextual updates.
 
 ```python
@@ -203,7 +203,7 @@ history = graph.query_graph(source='Patient123')
 print(f"Patient History: {history}")
 ```
 
-### **3. Recommendation Systems**
+### 3. Recommendation Systems
 Leverage graph embeddings to compute similarities and recommend items.
 
 ```python
@@ -211,11 +211,11 @@ similarity = embedder.compute_graph_similarity('Product1', 'Product2')
 print(f"Product Similarity: {similarity}")
 ```
 
-## **Documentation**
+## Documentation
 
 For a detailed explanation of all methods, classes, and configurations, please refer to the [official documentation](https://github.com/yourusername/graphfusionai).
 
-## **Contributing**
+## Contributing
 
 We welcome contributions! To contribute:
 1. Fork the repository.
@@ -227,11 +227,11 @@ To run tests:
 pytest tests/
 ```
 
-## **License**
+## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## **Contact**
+## Contact
 
 For support or collaboration, feel free to reach out:  
 **Email**: [hello@GraphFusion.onmicrosoft.com](mailto:hello@GraphFusion.onmicrosoft.com)  
