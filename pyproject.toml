@@ -28,3 +28,4 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/graphfusionai/graphfusion"
 Repository = "https://github.com/graphfusionai/graphfusion"
+Documentation = "https://graphfusionai.github.io/graphfusion"
