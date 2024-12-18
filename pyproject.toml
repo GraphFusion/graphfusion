@@ -16,6 +16,8 @@ dependencies = [
     "pandas"
 ]
 
+license = { text = "MIT" }
+
 [project.optional-dependencies]
 dev = [
     "pytest",
@@ -26,4 +28,3 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/graphfusionai/graphfusion"
 Repository = "https://github.com/graphfusionai/graphfusion"
-
