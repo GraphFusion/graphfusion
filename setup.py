@@ -8,7 +8,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="graphfusionai",
     version="0.1.2",
-    description="A library for integrating dynamic neural memory with knowledge graphs",
+    description="GraphFusionAI: A framework for neural memory networks and knowledge graphs",
     long_description=long_description,  
     long_description_content_type="text/markdown",  
     author="Kiplangat Korir",
@@ -33,4 +33,7 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.6",
+
+    keywords='AI, neural memory, knowledge graphs, deep learning',
+    license='MIT',
 )
